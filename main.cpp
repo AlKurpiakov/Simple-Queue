@@ -1,5 +1,6 @@
 #include "Simple_Queue.h"
 
+
 int main(){
     SimpleQueue<int> queue(100);
     queue.Push(2);
