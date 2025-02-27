@@ -18,7 +18,7 @@ private:
 
 public:
     
-    SimpleQueue(size_t _capacity):  _capacity(_capacity), 
+    SimpleQueue(size_t capacity):  _capacity(capacity), 
                                     _size(0), _backIndex(0),
                                     _data(new T[_capacity]){}
     
