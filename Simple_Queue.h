@@ -5,22 +5,17 @@ template <typename T>
 class SimpleQueue{
 private:
     T* _data;
-    size_t _capacity;
+    size_t _startIndex;
+    size_t _endIndex;
     size_t _size;
-    size_t _backIndex;
+   size_t _capacity;
 
-
-    void Move(){
-        for (int i = 0; i < _size; i++) {
-            _data[i] = _data[i+1];
-        }
-    }
 
 public:
     
-    SimpleQueue(size_t capacity):  _capacity(capacity), 
-                                    _size(0), _backIndex(0),
-                                    _data(new T[_capacity]){}
+    SimpleQueue(size_t capacity): _size(capacity), _data(new T[_capacity]),
+                                  _startIndex(0), _capacity(0), 
+                                  _endIndex(0){}
     
     ~SimpleQueue(){
         delete[] _data;
@@ -28,29 +23,37 @@ public:
     
     void Pop(){
         if (IsEmpty())   throw "Queue is empty";
-        _size--;
-        (_size == 0) ? _backIndex = 0 : _backIndex--;
-        Move();
+        _capacity--;
+        _startIndex = (_startIndex + 1) & (_size - 1);
     }
     
     void Push(const T& elem) {
         if (IsFull())   throw "Queue is full";
-        (_size == 0) ? : _backIndex++;
-        _data[_size++] = elem;
+
+        _data[_endIndex] = elem;
+        _endIndex = (_endIndex + 1) & (_size - 1);
+        _capacity++;
     }
     
 
     void Push(T&& elem) {
         if (IsFull())   throw "Queue is full";
-        (_size == 0) ? : _backIndex++;
+        
         _data[_size++] = T(elem);
         elem = T();
+        _endIndex = (_endIndex + 1) & (_size - 1);
+        _capacity++;
+    }
+
+    void Print(){
+        for(size_t i = 0; i < _capacity; i++)
+            cout << _data[(_startIndex + i) & (_size - 1)] << endl;
     }
 
 
-    size_t Size()     {return _size;}
+    size_t Capacity()     {return _capacity;}
     
-    bool IsEmpty()    {return _size == 0;}
+    bool IsEmpty()    {return _capacity == 0;}
     bool IsFull()     {return _size == _capacity;}
     
 
@@ -58,13 +61,13 @@ public:
         if (IsEmpty()) {
             throw "Queue is empty";
         }
-        return _data[0];
+        return _data[_startIndex];
     }
     const T& Front() const {
         if (IsEmpty()) {
             throw "Queue is empty";
         }
-        return _data[0];
+        return _data[_startIndex];
     }
 
 
@@ -72,13 +75,13 @@ public:
         if (IsEmpty()) {
             throw "Queue is empty";
         }
-        return _data[_backIndex];
+        return _data[_endIndex];
     }
     const T& Back() const {
         if (IsEmpty()) {
             throw "Queue is empty";
         }
-        return _data[_backIndex];
+        return _data[_endIndex];
     }
 
 };
